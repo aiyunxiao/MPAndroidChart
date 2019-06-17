@@ -225,6 +225,7 @@ public class ViewPortHandler {
 
     /**
      * Zooms out to original size.
+     *
      * @param outputMatrix
      */
     public void resetZoom(Matrix outputMatrix) {
@@ -409,7 +410,15 @@ public class ViewPortHandler {
     /**
      * buffer for storing the 9 matrix values of a 3x3 matrix
      */
-    protected final float[] matrixBuffer = new float[9];
+    protected float[] matrixBuffer = new float[9];
+
+    public void resetScale() {
+        matrixBuffer = new float[9];
+        mMatrixTouch.setScale(1, 1);
+        mMatrixTouch.setTranslate(0, 0);
+        setMinimumScaleX(1);
+        setMinimumScaleY(1);
+    }
 
     /**
      * call this method to refresh the graph with a given matrix
