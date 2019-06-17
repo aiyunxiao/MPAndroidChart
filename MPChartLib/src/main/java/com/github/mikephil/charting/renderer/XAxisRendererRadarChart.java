@@ -1,6 +1,7 @@
 package com.github.mikephil.charting.renderer;
 
 import android.graphics.Canvas;
+import android.graphics.Paint;
 
 import com.github.mikephil.charting.charts.RadarChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -38,7 +39,7 @@ public class XAxisRendererRadarChart extends XAxisRenderer {
         float factor = mChart.getFactor();
 
         MPPointF center = mChart.getCenterOffsets();
-        MPPointF pOut = MPPointF.getInstance(0,0);
+        MPPointF pOut = MPPointF.getInstance(0, 0);
         for (int i = 0; i < mChart.getData().getMaxEntryCountSet().getEntryCount(); i++) {
 
             String label = mXAxis.getValueFormatter().getAxisLabel(i, mXAxis);
@@ -47,6 +48,21 @@ public class XAxisRendererRadarChart extends XAxisRenderer {
 
             Utils.getPosition(center, mChart.getYRange() * factor
                     + mXAxis.mLabelRotatedWidth / 2f, angle, pOut);
+            if (label.contains("\n")) {
+                String[] texts = label.split("\n");
+                Paint.FontMetrics mFontMetricsBuffer = new Paint.FontMetrics();
+                final float lineHeight = mAxisLabelPaint.getFontMetrics(mFontMetricsBuffer);
+                int lineCount = texts.length;
+                for (int j = 0; j < lineCount; j++) {
+                    //多行Y轴偏移计算
+                    float offsetY = compuseMultiTextOffset(lineHeight, lineCount, j);
+                    drawLabel(c, texts[j], pOut.x, pOut.y - mXAxis.mLabelRotatedHeight / 2.f + offsetY,
+                            drawLabelAnchor, labelRotationAngleDegrees);
+                }
+            } else {
+                drawLabel(c, label, pOut.x, pOut.y - mXAxis.mLabelRotatedHeight / 2.f,
+                        drawLabelAnchor, labelRotationAngleDegrees);
+            }
 
             drawLabel(c, label, pOut.x, pOut.y - mXAxis.mLabelRotatedHeight / 2.f,
                     drawLabelAnchor, labelRotationAngleDegrees);
@@ -57,13 +73,17 @@ public class XAxisRendererRadarChart extends XAxisRenderer {
         MPPointF.recycleInstance(drawLabelAnchor);
     }
 
-	/**
-	 * XAxis LimitLines on RadarChart not yet supported.
-	 *
-	 * @param c
-	 */
-	@Override
-	public void renderLimitLines(Canvas c) {
-		// this space intentionally left blank
-	}
+    private float compuseMultiTextOffset(float lineHeight, int lineCount, int lineIndex) {
+        return lineHeight * (lineIndex - (lineCount - 1) / 2);
+    }
+
+    /**
+     * XAxis LimitLines on RadarChart not yet supported.
+     *
+     * @param c
+     */
+    @Override
+    public void renderLimitLines(Canvas c) {
+        // this space intentionally left blank
+    }
 }
