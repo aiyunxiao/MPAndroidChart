@@ -37,11 +37,14 @@ public abstract class ComponentBase {
      * the text size of the labels
      */
     protected float mTextSize = Utils.convertDpToPixel(10f);
+    private float mLableWidthOffset = 0f;
 
     /**
      * the text color to use for the labels
      */
     protected int mTextColor = Color.BLACK;
+    protected float mTextLineSpace = 1.3f;
+
 
 
     public ComponentBase() {
@@ -87,6 +90,13 @@ public abstract class ComponentBase {
     public void setYOffset(float yOffset) {
         mYOffset = Utils.convertDpToPixel(yOffset);
     }
+    public float getLableWidthOffset() {
+        return mLableWidthOffset;
+    }
+
+    public void setLableWidthOffset(float lableWidthOffset) {
+        mLableWidthOffset = Utils.convertDpToPixel(lableWidthOffset);
+    }
 
     /**
      * returns the Typeface used for the labels, returns null if none is set
@@ -129,6 +139,13 @@ public abstract class ComponentBase {
      */
     public float getTextSize() {
         return mTextSize;
+    }
+    public float getTextLineSpace() {
+        return mTextLineSpace;
+    }
+
+    public void setTextLineSpace(float textLineSpace) {
+        this.mTextLineSpace = textLineSpace;
     }
 
 

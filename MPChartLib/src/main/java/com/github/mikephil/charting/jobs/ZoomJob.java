@@ -36,7 +36,8 @@ public class ZoomJob extends ViewPortJob {
         return result;
     }
 
-    public static void recycleInstance(ZoomJob instance) {
+    public void recycleInstance(ZoomJob instance) {
+        view = null;
         pool.recycle(instance);
     }
 

@@ -58,6 +58,7 @@ public class RadarChart extends PieRadarChartBase<RadarData> {
      * modulus that determines how many labels and web-lines are skipped before the next is drawn
      */
     private int mSkipWebLineCount = 0;
+    private boolean mWebIsCircle = false;
 
     /**
      * the object reprsenting the y-axis labels
@@ -223,6 +224,14 @@ public class RadarChart extends PieRadarChartBase<RadarData> {
 
     public float getWebLineWidth() {
         return mWebLineWidth;
+    }
+
+    public boolean isWebIsCircle() {
+        return mWebIsCircle;
+    }
+
+    public void setWebIsCircle(boolean webIsCircle) {
+        mWebIsCircle = webIsCircle;
     }
 
     /**

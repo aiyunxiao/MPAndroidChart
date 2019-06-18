@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 import com.github.mikephil.charting.animation.ChartAnimator;
 import com.github.mikephil.charting.utils.Utils;
@@ -13,6 +14,8 @@ import com.github.mikephil.charting.utils.ViewPortHandler;
  * Created by Philipp Jahoda on 25/01/16.
  */
 public abstract class LineRadarRenderer extends LineScatterCandleRadarRenderer {
+    public static final String LOG_TAG = "MPAndroidChart";
+
 
     public LineRadarRenderer(ChartAnimator animator, ViewPortHandler viewPortHandler) {
         super(animator, viewPortHandler);
@@ -27,7 +30,7 @@ public abstract class LineRadarRenderer extends LineScatterCandleRadarRenderer {
      */
     protected void drawFilledPath(Canvas c, Path filledPath, Drawable drawable) {
 
-        if (clipPathSupported()) {
+        if (clipPathSupported(c)) {
 
             int save = c.save();
             c.clipPath(filledPath);
@@ -58,7 +61,7 @@ public abstract class LineRadarRenderer extends LineScatterCandleRadarRenderer {
 
         int color = (fillAlpha << 24) | (fillColor & 0xffffff);
 
-        if (clipPathSupported()) {
+        if (clipPathSupported(c)) {
 
             int save = c.save();
 
@@ -89,7 +92,17 @@ public abstract class LineRadarRenderer extends LineScatterCandleRadarRenderer {
      *
      * @return
      */
-    private boolean clipPathSupported() {
-        return Utils.getSDKInt() >= 18;
+    private boolean clipPathSupported(Canvas c) {
+
+        if (Utils.getSDKInt() >= 18) {
+            return true;
+        } else {
+            if (android.os.Build.VERSION.SDK_INT >= 11 && !c.isHardwareAccelerated()) {
+                return true;
+            } else {
+                Log.e(LOG_TAG, "Cannot enable/disable hardware acceleration for devices below API level 11.");
+            }
+        }
+        return false;
     }
 }

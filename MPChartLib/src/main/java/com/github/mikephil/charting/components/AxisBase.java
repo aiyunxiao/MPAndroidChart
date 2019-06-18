@@ -314,8 +314,8 @@ public abstract class AxisBase extends ComponentBase {
      */
     public void setLabelCount(int count) {
 
-        if (count > 25)
-            count = 25;
+//        if (count > 25)
+//            count = 25;
         if (count < 2)
             count = 2;
 
@@ -454,7 +454,9 @@ public abstract class AxisBase extends ComponentBase {
      *
      * @param enabled
      */
-    public void setDrawGridLinesBehindData(boolean enabled) { mDrawGridLinesBehindData = enabled; }
+    public void setDrawGridLinesBehindData(boolean enabled) {
+        mDrawGridLinesBehindData = enabled;
+    }
 
     public boolean isDrawGridLinesBehindDataEnabled() {
         return mDrawGridLinesBehindData;
@@ -472,13 +474,47 @@ public abstract class AxisBase extends ComponentBase {
 
         for (int i = 0; i < mEntries.length; i++) {
             String text = getFormattedLabel(i);
+            if (text != null) {
+                //适配lable文本换行显示
+                if (text.contains("\n")) {
+                    String[] texts = text.split("\n");
+                    for (int j = 0; j < texts.length; j++) {
+                        if (longest.length() < texts[j].length()) {
+                            longest = texts[j];
+                        }
+                    }
+                } else {
+                    if (longest.length() < text.length()) {
+                        longest = text;
+                    }
+                }
 
-            if (text != null && longest.length() < text.length())
-                longest = text;
+            }
         }
 
         return longest;
     }
+    /**
+     * 获取label最大行数
+     *
+     * @return
+     */
+    public int getLabelMaxLineCount() {
+        int lineCount = 1;
+        for (int i = 0; i < mEntries.length; i++) {
+            String text = getFormattedLabel(i);
+            if (text != null) {
+                if (text.contains("\n")) {
+                    String[] texts = text.split("\n");
+                    if (lineCount < texts.length) {
+                        lineCount = texts.length;
+                    }
+                }
+            }
+        }
+        return lineCount;
+    }
+
 
     public String getFormattedLabel(int index) {
 
@@ -514,7 +550,7 @@ public abstract class AxisBase extends ComponentBase {
 
         if (mAxisValueFormatter == null ||
                 (mAxisValueFormatter instanceof DefaultAxisValueFormatter &&
-                        ((DefaultAxisValueFormatter)mAxisValueFormatter).getDecimalDigits() != mDecimals))
+                        ((DefaultAxisValueFormatter) mAxisValueFormatter).getDecimalDigits() != mDecimals))
             mAxisValueFormatter = new DefaultAxisValueFormatter(mDecimals);
 
         return mAxisValueFormatter;
@@ -751,32 +787,28 @@ public abstract class AxisBase extends ComponentBase {
     /**
      * Gets extra spacing for `axisMinimum` to be added to automatically calculated `axisMinimum`
      */
-    public float getSpaceMin()
-    {
+    public float getSpaceMin() {
         return mSpaceMin;
     }
 
     /**
      * Sets extra spacing for `axisMinimum` to be added to automatically calculated `axisMinimum`
      */
-    public void setSpaceMin(float mSpaceMin)
-    {
+    public void setSpaceMin(float mSpaceMin) {
         this.mSpaceMin = mSpaceMin;
     }
 
     /**
      * Gets extra spacing for `axisMaximum` to be added to automatically calculated `axisMaximum`
      */
-    public float getSpaceMax()
-    {
+    public float getSpaceMax() {
         return mSpaceMax;
     }
 
     /**
      * Sets extra spacing for `axisMaximum` to be added to automatically calculated `axisMaximum`
      */
-    public void setSpaceMax(float mSpaceMax)
-    {
+    public void setSpaceMax(float mSpaceMax) {
         this.mSpaceMax = mSpaceMax;
     }
 }

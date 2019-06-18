@@ -82,8 +82,16 @@ public class XAxisRenderer extends AxisRenderer {
 
         final FSize labelSize = Utils.calcTextSize(mAxisLabelPaint, longest);
 
-        final float labelWidth = labelSize.width;
-        final float labelHeight = Utils.calcTextHeight(mAxisLabelPaint, "Q");
+        int lineCount = mXAxis.getLabelMaxLineCount();
+        // 1.3f 为行间距
+        final float labelHeight = Utils.calcTextHeight(mAxisLabelPaint, "Q") * (lineCount * mXAxis.getTextLineSpace());
+
+        float labelWidth = labelSize.width + mXAxis.getLableWidthOffset();
+
+        //适配 radarChart height > width 的情况
+        if (labelWidth < labelHeight) {
+            labelWidth = labelHeight;
+        }
 
         final FSize labelRotatedSize = Utils.getSizeOfRotatedRectangleByDegrees(
                 labelWidth,
@@ -112,7 +120,7 @@ public class XAxisRenderer extends AxisRenderer {
         mAxisLabelPaint.setTextSize(mXAxis.getTextSize());
         mAxisLabelPaint.setColor(mXAxis.getTextColor());
 
-        MPPointF pointF = MPPointF.getInstance(0,0);
+        MPPointF pointF = MPPointF.getInstance(0, 0);
         if (mXAxis.getPosition() == XAxisPosition.TOP) {
             pointF.x = 0.5f;
             pointF.y = 1.0f;
@@ -220,17 +228,32 @@ public class XAxisRenderer extends AxisRenderer {
                         x += width / 2;
                     }
                 }
-
                 drawLabel(c, label, x, pos, anchor, labelRotationAngleDegrees);
             }
         }
     }
 
+
     protected void drawLabel(Canvas c, String formattedLabel, float x, float y, MPPointF anchor, float angleDegrees) {
-        Utils.drawXAxisValue(c, formattedLabel, x, y, mAxisLabelPaint, anchor, angleDegrees);
+        //适配多行文本
+        if (formattedLabel.contains("\n")) {
+            String[] texts = formattedLabel.split("\n");
+            final float lineHeight = Utils.calcTextHeight(mAxisLabelPaint, "Q");
+            System.out.println("c = [" + lineHeight);
+            int lineCount = texts.length;
+            for (int j = 0; j < lineCount; j++) {
+                //多行Y轴偏移计算, 行间距1.3f
+                float offsetY = lineHeight * j * mXAxis.getTextLineSpace();
+                Utils.drawXAxisValue(c, texts[j], x, y + offsetY, mAxisLabelPaint, anchor, angleDegrees);
+            }
+        } else {
+            Utils.drawXAxisValue(c, formattedLabel, x, y, mAxisLabelPaint, anchor, angleDegrees);
+        }
     }
+
     protected Path mRenderGridLinesPath = new Path();
     protected float[] mRenderGridLinesBuffer = new float[2];
+
     @Override
     public void renderGridLines(Canvas c) {
 
@@ -240,7 +263,7 @@ public class XAxisRenderer extends AxisRenderer {
         int clipRestoreCount = c.save();
         c.clipRect(getGridClippingRect());
 
-        if(mRenderGridLinesBuffer.length != mAxis.mEntryCount * 2){
+        if (mRenderGridLinesBuffer.length != mAxis.mEntryCount * 2) {
             mRenderGridLinesBuffer = new float[mXAxis.mEntryCount * 2];
         }
         float[] positions = mRenderGridLinesBuffer;

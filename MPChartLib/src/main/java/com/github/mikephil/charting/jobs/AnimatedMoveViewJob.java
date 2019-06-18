@@ -55,6 +55,7 @@ public class AnimatedMoveViewJob extends AnimatedViewPortJob {
     }
 
     public void recycleSelf(){
+        view = null;
         recycleInstance(this);
     }
 

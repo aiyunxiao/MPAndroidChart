@@ -1,6 +1,7 @@
 package com.github.mikephil.charting.renderer;
 
 import android.graphics.Canvas;
+import android.graphics.Paint;
 
 import com.github.mikephil.charting.charts.RadarChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -29,7 +30,6 @@ public class XAxisRendererRadarChart extends XAxisRenderer {
 
         mAxisLabelPaint.setTypeface(mXAxis.getTypeface());
         mAxisLabelPaint.setTextSize(mXAxis.getTextSize());
-        mAxisLabelPaint.setColor(mXAxis.getTextColor());
 
         float sliceangle = mChart.getSliceAngle();
 
@@ -38,8 +38,9 @@ public class XAxisRendererRadarChart extends XAxisRenderer {
         float factor = mChart.getFactor();
 
         MPPointF center = mChart.getCenterOffsets();
-        MPPointF pOut = MPPointF.getInstance(0,0);
+        MPPointF pOut = MPPointF.getInstance(0, 0);
         for (int i = 0; i < mChart.getData().getMaxEntryCountSet().getEntryCount(); i++) {
+            mAxisLabelPaint.setColor(mXAxis.getTextColor());
 
             String label = mXAxis.getValueFormatter().getAxisLabel(i, mXAxis);
 
@@ -47,8 +48,7 @@ public class XAxisRendererRadarChart extends XAxisRenderer {
 
             Utils.getPosition(center, mChart.getYRange() * factor
                     + mXAxis.mLabelRotatedWidth / 2f, angle, pOut);
-
-            drawLabel(c, label, pOut.x, pOut.y - mXAxis.mLabelRotatedHeight / 2.f,
+            drawLabel(c, label, pOut.x, pOut.y - mXAxis.mLabelRotatedHeight / 2.f + mXAxis.getYOffset() / 2f,
                     drawLabelAnchor, labelRotationAngleDegrees);
         }
 
@@ -57,13 +57,13 @@ public class XAxisRendererRadarChart extends XAxisRenderer {
         MPPointF.recycleInstance(drawLabelAnchor);
     }
 
-	/**
-	 * XAxis LimitLines on RadarChart not yet supported.
-	 *
-	 * @param c
-	 */
-	@Override
-	public void renderLimitLines(Canvas c) {
-		// this space intentionally left blank
-	}
+    /**
+     * XAxis LimitLines on RadarChart not yet supported.
+     *
+     * @param c
+     */
+    @Override
+    public void renderLimitLines(Canvas c) {
+        // this space intentionally left blank
+    }
 }
