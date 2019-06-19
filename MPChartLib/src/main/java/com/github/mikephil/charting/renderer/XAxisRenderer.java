@@ -118,7 +118,7 @@ public class XAxisRenderer extends AxisRenderer {
 
         mAxisLabelPaint.setTypeface(mXAxis.getTypeface());
         mAxisLabelPaint.setTextSize(mXAxis.getTextSize());
-        mAxisLabelPaint.setColor(mXAxis.getTextColor());
+//        mAxisLabelPaint.setColor(mXAxis.getTextColor());
 
         MPPointF pointF = MPPointF.getInstance(0, 0);
         if (mXAxis.getPosition() == XAxisPosition.TOP) {
@@ -208,6 +208,7 @@ public class XAxisRenderer extends AxisRenderer {
             float x = positions[i];
 
             if (mViewPortHandler.isInBoundsX(x)) {
+                mAxisLabelPaint.setColor(mXAxis.getTextColor((int) mXAxis.mEntries[i / 2]));
 
                 String label = mXAxis.getValueFormatter().getAxisLabel(mXAxis.mEntries[i / 2], mXAxis);
 
