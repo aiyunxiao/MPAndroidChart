@@ -40,7 +40,7 @@ public class XAxisRendererRadarChart extends XAxisRenderer {
         MPPointF center = mChart.getCenterOffsets();
         MPPointF pOut = MPPointF.getInstance(0, 0);
         for (int i = 0; i < mChart.getData().getMaxEntryCountSet().getEntryCount(); i++) {
-            mAxisLabelPaint.setColor(mXAxis.getTextColor());
+            mAxisLabelPaint.setColor(mXAxis.getTextColor(i));
 
             String label = mXAxis.getValueFormatter().getAxisLabel(i, mXAxis);
 
